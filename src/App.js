@@ -6,6 +6,7 @@ import {
   Route,
   Redirect
 } from 'react-router-dom'
+import { parse as qs } from 'query-string';
 import { Container, Row, Col } from 'reactstrap';
 
 class App extends Component {
@@ -42,10 +43,11 @@ class App extends Component {
             <Route exact path="/" render={() => (
               <Redirect to="/items" />
             )} />
-            <Route path="/items/:id?/:action?" render={({match: { params: { id: itemId, action } }}) => {
+            <Route path="/items/:id?/" render={({match: { params: { id: itemId, action } }, location: { search }}) => {
               const selectedItem = itemId && items.find(i => i.id.toString() === itemId.toString());
+              search = qs(search);
               return <div>
-                { itemId === undefined && items.length > 0 && <Redirect to={`/items/${items[0].id}`} /> }
+                { !selectedItem && items.length > 0 && <Redirect to={`/items/${items[0].id}`} /> }
 
                 <Container fluid={true}>
                   <Row noGutters={false}>
@@ -57,7 +59,7 @@ class App extends Component {
                       />
                     </Col>
                     <Col xs={9}>
-                      {selectedItem && <Item {...selectedItem} editing={action === 'edit'} />}
+                      {selectedItem && <Item {...selectedItem} editing={search.editing} />}
                     </Col>
                   </Row>
                 </Container>
