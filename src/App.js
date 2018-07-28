@@ -1,18 +1,70 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import List from './List/List';
+import Item from './Item/Item';
+import {
+  BrowserRouter as Router,
+  Route,
+  Redirect
+} from 'react-router-dom'
+import { Container, Row, Col } from 'reactstrap';
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      items: [
+        {
+          id: 123,
+          title: 'hello world',
+          preview: 'Hi there',
+          content: '# Hi there \n \n Hi there Hi there Hi there',
+          active: false
+        },{
+          id: 321,
+          title: 'World hello',
+          preview: 'There hi',
+          content: '# There hi \n \n There hi There hi There hi',
+          active: false
+        }
+      ]
+    };
+  }
+
   render() {
+    const { items } = this.state;
+
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
+        <Router>
+          <div>
+            <Route exact path="/" render={() => (
+              <Redirect to="/items" />
+            )} />
+            <Route path="/items/:id?/:action?" render={({match: { params: { id: itemId, action } }}) => {
+              const selectedItem = itemId && items.find(i => i.id.toString() === itemId.toString());
+              return <div>
+                { itemId === undefined && items.length > 0 && <Redirect to={`/items/${items[0].id}`} /> }
+
+                <Container fluid={true}>
+                  <Row noGutters={false}>
+                    <Col xs={3}>
+                      <List 
+                        items={items}
+                        selected={itemId}
+                        onSelect={(id) => {  }}
+                      />
+                    </Col>
+                    <Col xs={9}>
+                      {selectedItem && <Item {...selectedItem} editing={action === 'edit'} />}
+                    </Col>
+                  </Row>
+                </Container>
+              </div>
+            }}/>
+          </div>
+        </Router>
       </div>
     );
   }
