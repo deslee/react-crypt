@@ -23,7 +23,7 @@ const Preview = ({children}) => {
 
 export default class List extends Component {
     render() {
-        const { 
+        const {
             items = [],
             onSelect = () => {},
             selected = undefined

@@ -15,8 +15,9 @@ class AppComponent extends Component {
       items = [],
       selectedItem,
       isEditing,
-      onEdit = () => {},
-      saveItem = () => {},
+      triggerEditItem = () => {},
+      triggerSaveItem = () => {},
+      saveItem = () => {}
     } = this.props;
 
     return (
@@ -32,8 +33,9 @@ class AppComponent extends Component {
             {selectedItem && <Item 
               {...selectedItem}
               editing={isEditing} 
-              onEdit={() => onEdit()}
-              onSave={(item) => saveItem(item)}
+              triggerEditItem={triggerEditItem}
+              triggerSaveItem={triggerSaveItem}
+              saveItem={saveItem}
             />}
           </Col>
         </Row>
@@ -67,6 +69,22 @@ class App extends Component {
     };
   }
 
+  save(toSave) {
+    this.setState({
+      ...this.state,
+      items: this.state.items.map(item => item.id === toSave.id ? Object.assign({}, item, toSave) : item)
+    });
+  }
+
+  triggerEditItem(history, item) {
+    console.log(arguments)
+    history.push(`/items/${item.id}?editing`)
+  }
+  triggerSaveItem(history, item) {
+    this.save(item);
+    history.push(`/items/${item.id}`)
+  }
+
   render() {
     const { items } = this.state;
 
@@ -89,14 +107,9 @@ class App extends Component {
                   selectedItem={selectedItem}
                   items={items}
                   isEditing={search.editing}
-                  onEdit={() => history.push(`/items/${selectedItem.id}?editing`)}
-                  saveItem={(toSave) => {
-                    this.setState({
-                      ...this.state,
-                      items: this.state.items.map(item => item.id === toSave.id ? Object.assign({}, item, toSave) : item)
-                    });
-                    history.push(`/items/${selectedItem.id}`)
-                  }}
+                  triggerEditItem={this.triggerEditItem.bind(this, history)}
+                  triggerSaveItem={this.triggerSaveItem.bind(this, history)}
+                  saveItem={this.save.bind(this)}
                 />
               </div>)
             }}/>
