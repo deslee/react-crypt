@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Button, Input } from 'reactstrap';
 
-const Display = ({id, title = '', content = '', tags = [], triggerEditItem = () => {}}) => (
+const Display = ({id, title = '', content = '', tags = [], date = '', triggerEditItem = () => {}}) => (
     <div>
         <h1>{title}</h1>
         <div>
             <ReactMarkdown source={content} />
         </div>
-        <Button onClick={() => triggerEditItem({title, content, id, tags})}>Edit</Button>
+        <Button onClick={() => triggerEditItem({title, content, id, tags, date})}>Edit</Button>
     </div>
 );
 
@@ -19,25 +19,28 @@ class Edit extends Component {
         const { 
             title = "", 
             content = "",
-            tags = []
+            tags = [],
+            date = ''
         } = this.props;
 
         this.state = {
             title: title,
             content: content,
-            tags: tags
+            tags: tags,
+            date
         }
     }
 
     // gets item from current state and initial props
     getCurrentItem() {
         const { id } = this.props;
-        const { title, content, tags } = this.state
+        const { title, content, tags, date } = this.state
         return {
             id: id,
             title: title,
             content: content,
-            tags
+            tags,
+            date
         }
     }
 

@@ -41,23 +41,27 @@ export default class List extends Component {
 
         return (
             <ListGroup>
-                {items.map(({id, title = "", preview = ""}) => (<ListGroupItem 
-                    tag={Link}
-                    replace={true}
-                    to={`/items/${id}`}
-                    action
-                    active={selected && id && selected.toString() === id.toString()}
-                    onClick={() => {onSelect(id)}}
-                    key={id}
-                >
-                    <div style={itemStyle}>
-                        <div style={titleAndPreview}>
-                            <Title>{title}</Title>
-                            <Preview>{preview}</Preview>
+                {items.map(({id, title = "", content = ""}) => {
+                    const preview = content;
+
+                    return (<ListGroupItem 
+                        tag={Link}
+                        replace={true}
+                        to={`/items/${id}`}
+                        action
+                        active={selected && id && selected.toString() === id.toString()}
+                        onClick={() => {onSelect(id)}}
+                        key={id}
+                    >
+                        <div style={itemStyle}>
+                            <div style={titleAndPreview}>
+                                <Title>{title}</Title>
+                                <Preview>{preview}</Preview>
+                            </div>
+                            <MdChevronRight style={chevron} />
                         </div>
-                        <MdChevronRight style={chevron} />
-                    </div>
-                </ListGroupItem>))}
+                    </ListGroupItem>);
+                })}
             </ListGroup>
         )
     }

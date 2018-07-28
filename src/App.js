@@ -54,14 +54,15 @@ class App extends Component {
         {
           id: 123,
           title: 'hello world',
-          preview: 'Hi there',
-          content: '**Hi there** \n \n Hi there Hi there Hi there',
-          active: false
+          tags: [],
+          date: '',
+          content: '**Hi there** \n \n Hi there Hi there Hi there'
         },
         {
           id: 321,
           title: 'World hello',
-          preview: 'There hi',
+          tags: [],
+          date: '',
           content: '*There hi* \n \n There hi There hi There hi',
           active: false
         }
@@ -77,7 +78,6 @@ class App extends Component {
   }
 
   triggerEditItem(history, item) {
-    console.log(arguments)
     history.push(`/items/${item.id}?editing`)
   }
   triggerSaveItem(history, item) {
