@@ -25,7 +25,7 @@ export default class List extends Component {
     render() {
         const { 
             items = [],
-            onSelect = (id) => {},
+            onSelect = () => {},
             selected = undefined
         } = this.props;
 
