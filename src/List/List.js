@@ -26,6 +26,7 @@ export default class List extends Component {
         const {
             items = [],
             onSelect = () => {},
+            settings = {},
             selected = undefined
         } = this.props;
 
@@ -56,7 +57,7 @@ export default class List extends Component {
                         <div style={itemStyle}>
                             <div style={titleAndPreview}>
                                 <Title>{title}</Title>
-                                <Preview>{preview}</Preview>
+                                {settings.displayPreview && <Preview>{preview}</Preview>}
                             </div>
                             <MdChevronRight style={chevron} />
                         </div>
