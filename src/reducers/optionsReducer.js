@@ -1,4 +1,5 @@
-import { UPDATE_OPTIONS, REHYDRATE_STATE } from "../actions/optionsActions";
+import { UPDATE_OPTIONS } from "../actions/optionsActions";
+import { REHYDRATE_STATE, RESET } from '../actions/startupActions'
 
 const initialState = {
     settings: {
@@ -17,6 +18,8 @@ export default function optionsReducer(state = initialState, action) {
             return {
                 ...action.payload.options
             }
+        case RESET:
+            return initialState
         default:
             return state;
     }

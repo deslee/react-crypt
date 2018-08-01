@@ -1,5 +1,6 @@
 import { TRIGGER_SAVE_ITEM, TRIGGER_DELETE_ITEM, TRIGGER_ADD_ITEM } from '../actions/itemActions';
-import { REHYDRATE_STATE } from '../actions/optionsActions';
+import { REHYDRATE_STATE, RESET } from '../actions/startupActions'
+import { CREATE_NEW_JOURNAL } from '../actions/startupActions';
 
 const initialState = {
     allItems: [
@@ -26,10 +27,17 @@ export default function itemReducer(state = initialState, action) {
                 ...state,
                 allItems: state.allItems.filter(item => item.id !== action.payload.id)
             }
+        case CREATE_NEW_JOURNAL:
+            return {
+                ...state,
+                allItems: action.payload
+            }
         case REHYDRATE_STATE:
             return {
                 ...action.payload.items
             }
+        case RESET:
+            return initialState;
         default:
             return state;
     }

@@ -9,7 +9,8 @@ import Settings from './Settings/Settings';
 import { guid } from './utils/guid';
 import { triggerSaveItem, triggerDeleteItem, triggerAddItem } from './actions/itemActions';
 import { getSettings } from './reducers/optionsReducer';
-import SaveAndLoad from './Settings/SaveAndLoad';
+import Save from './SaveAndLoad/Save';
+import Reset from './SaveAndLoad/Reset';
 
 class Layout extends Component {
     static mapStateToProps(state) {
@@ -49,7 +50,8 @@ class Layout extends Component {
         <Container fluid={true}>
           <Row>
             <Col><Settings /></Col>
-            <Col><SaveAndLoad /></Col>
+            <Col><Save /></Col>
+            <Col><Reset /></Col>
           </Row>
           <Row noGutters={false}>
             <Col>
