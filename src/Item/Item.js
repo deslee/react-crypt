@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
-import { Button, Input } from 'reactstrap';
+import { TextField, Button, Icon } from '@material-ui/core';
 
 const Display = ({id, title = '', content = '', tags = [], date = ''}) => (
     <div>
@@ -9,7 +9,7 @@ const Display = ({id, title = '', content = '', tags = [], date = ''}) => (
         <div>
             <ReactMarkdown source={content} />
         </div>
-        <Link to="?editing=true"><Button>Edit</Button></Link>
+        <Link to="?editing=true"><Button variant="fab" aria-label="Edit" color="secondary"><Icon>edit_icon</Icon></Button></Link>
     </div>
 );
 
@@ -31,14 +31,26 @@ class Edit extends Component {
         const { title = '', content = '', deleteItem = () => {} } = this.props
         return (
             <div>
-                <h1>{title} (editing)</h1>
+                <h1>{title}</h1>
                 <div>
-                    <Input type="text" value={title} onChange={e => this.changed({title: e.target.value})} /> <br />
-                    <Input type="textarea" value={content} onChange={e => this.changed({content: e.target.value})}>
-                    </Input>
+                    <TextField
+                        label="Title"
+                        value={title}
+                        style = {{width: '100%'}}
+                        onChange={e => this.changed({title: e.target.value})}
+                        margin="normal"
+                    />
+                    <TextField
+                        label="Content"
+                        multiline
+                        value={content}
+                        style = {{width: '100%'}}
+                        onChange={e => this.changed({content: e.target.value})}
+                        margin="normal"
+                    />
                 </div>
-                <Link to="?"><Button>Save</Button></Link>
-                <Button onClick={() => deleteItem()}>Delete</Button>
+                <Link to="?"><Button variant="contained" color="primary">Save</Button></Link>
+                <Button onClick={() => deleteItem()} variant="contained" color="secondary">Delete</Button>
             </div>
         );
     }
@@ -51,7 +63,9 @@ export default class Item extends Component {
         } = this.props;
 
         return (
-            editing === false ? <Display {...this.props} /> : <Edit {...this.props} />
+            <div style={{padding: '1rem'}}>
+                {editing === false ? <Display {...this.props} /> : <Edit {...this.props} />}
+            </div>
         );
     }
 }

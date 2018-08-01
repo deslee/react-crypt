@@ -1,69 +1,35 @@
 import React, { Component } from 'react';
-import { ListGroup, ListGroupItem } from 'reactstrap';
-import { MdChevronRight } from 'react-icons/lib/md';
 import { Link } from 'react-router-dom';
+import { List, ListItem, ListItemText } from '@material-ui/core';
 
-const Title = ({children}) => {
-    const style = {
-        display: 'block',
-        fontSize: '2rem'
-    };
-    return (
-        <span style={style}>{children}</span>
-    );
-}
-const Preview = ({children}) => {
-    const style = {
-        display: 'block'
-    };
-    return (
-        <span style={style}>{children}</span>
-    );
-}
-
-export default class List extends Component {
+export default class ListComponent extends Component {
     render() {
         const {
             items = [],
-            onSelect = () => {},
             settings = {},
             selected = undefined
         } = this.props;
 
-        const itemStyle = {
-            display: 'flex'
-        };
-        const titleAndPreview = {
-            flexGrow: '1'
-        };
-        const chevron = {
-            alignSelf: 'center'
-        };
-
         return (
-            <ListGroup>
+            <List>
                 {items.map(({id, title = "", content = ""}) => {
                     const preview = content;
 
-                    return (<ListGroupItem 
-                        tag={Link}
-                        replace={true}
-                        to={`/items/${id}`}
-                        action
-                        active={selected && id && selected.toString() === id.toString()}
-                        onClick={() => {onSelect(id)}}
-                        key={id}
-                    >
-                        <div style={itemStyle}>
-                            <div style={titleAndPreview}>
-                                <Title>{title}</Title>
-                                {settings.displayPreview && <Preview>{preview}</Preview>}
-                            </div>
-                            <MdChevronRight style={chevron} />
-                        </div>
-                    </ListGroupItem>);
+                    return (
+                        <ListItem
+                            key={id}
+                            style={{
+                                background: selected === id ? 'lightgray' : 'inherit'
+                            }}
+                            component={Link}
+                            to={`/items/${id}`}
+                            button
+                        >
+                            <ListItemText primary={title} secondary={settings.displayPreview && preview} />
+                        </ListItem>
+                    )
                 })}
-            </ListGroup>
+            </List>
         )
     }
 }
