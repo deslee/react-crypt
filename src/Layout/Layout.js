@@ -5,13 +5,14 @@ import { withStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import Drawer from '@material-ui/core/Drawer';
+import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import AppMenu from './AppMenu';
 import List from '../List/List';
 import Item from '../Item/Item';
-import { Drawer, TextField } from '@material-ui/core';
 import { getAllItems } from '../reducers/itemReducer';
 
 const drawerWidth = 300;
