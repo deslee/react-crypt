@@ -6,6 +6,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import MoreVert from '@material-ui/icons/MoreVert';
 import { updateUi } from '../actions/uiActions';
 import SaveDialog from '../dialogs/SaveDialog';
+import LoadDialog from '../dialogs/LoadDialog';
 
 class AppMenu extends Component {
 
@@ -57,6 +58,7 @@ class AppMenu extends Component {
                   <MenuItem onClick={() => {this.handleClose(); this.updateUI({loadDialog: true})}}>Load</MenuItem>
                 </Menu>
                 <SaveDialog />
+                <LoadDialog />
             </div>
         )
     }

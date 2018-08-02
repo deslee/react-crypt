@@ -13,29 +13,30 @@ import { triggerSaveItem, triggerDeleteItem } from '../actions/itemActions';
 const styles = theme => ({
     root: {
         paddingRight: theme.spacing.unit * 2,
-    },
-    editButton: {
-        position: 'absolute',
-        bottom: theme.spacing.unit * 4,
-        right: theme.spacing.unit * 4
     }
 })
 
 class Display extends Component {
-    static styles = {
+    static styles = theme => ({
         root: {
 
+        },
+        editButton: {
+            position: 'absolute',
+            bottom: theme.spacing.unit * 4,
+            right: theme.spacing.unit * 4
+        },
+        content: {
+            ...theme.typography.body1
         }
-    }
+    })
 
     render() {
         const { item = {}, onEdit, classes } = this.props;
         return (
             <div className={classes.root}>
                 <Typography variant="display2" gutterBottom>{item.title}</Typography>
-                <Typography gutterBottom>
-                    <ReactMarkdown source={item.content} />
-                </Typography>
+                <ReactMarkdown className={classes.content} source={item.content} />
                 <Button className={classes.editButton} onClick={() => onEdit()} variant="fab" aria-label="Edit" color="secondary"><Icon>edit_icon</Icon></Button>
             </div>
         );
@@ -109,7 +110,6 @@ class Item extends Component {
 
     componentWillMount() {
         const item = this.getItem();
-        console.log(item, this.props.items)
         if (!item) {
             // go back
             this.goBack()
