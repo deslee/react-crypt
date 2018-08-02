@@ -63,6 +63,7 @@ const styles = theme => ({
   },
   drawer: {
     display: 'flex',
+    height: '100%',
     flexDirection: 'column'
   }
 })
@@ -144,7 +145,7 @@ class Layout extends Component {
             <Typography variant="title" color="inherit" className={classes.flex}>
               My App
               </Typography>
-            <AppMenu />
+            {/* <AppMenu /> */}
           </Toolbar>
         </AppBar>
         <Hidden mdUp>

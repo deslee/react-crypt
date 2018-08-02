@@ -11,7 +11,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import red from '@material-ui/core/colors/red';
 import { withStyles } from '@material-ui/core/styles';
 import { updateUi } from '../actions/uiActions';
-import { rehydrateState } from '../actions/startupActions';
+import { rehydrateState } from '../actions/optionsActions';
 
 const styles = {
     errorMessage: {

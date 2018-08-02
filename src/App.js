@@ -16,6 +16,8 @@ import Layout from './Layout/Layout';
 import { getAllItems } from './reducers/itemReducer';
 import { triggerAddItem } from './actions/itemActions';
 import { guid } from './utils/guid';
+import LoadDialog from './dialogs/LoadDialog';
+import SaveDialog from './dialogs/SaveDialog';
 
 export const STATE_STORAGE_KEY = 'STATE_STORAGE_KEY';
 const history = createBrowserHistory();
@@ -91,6 +93,8 @@ class AppComponent extends Component {
             </div>)
           }} />
         </div>
+        <SaveDialog />
+        <LoadDialog />
       </div>
     )
   }

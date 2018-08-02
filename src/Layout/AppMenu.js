@@ -57,8 +57,6 @@ class AppMenu extends Component {
                   <MenuItem onClick={() => {this.handleClose(); this.updateUI({saveDialog: true})}}>Save</MenuItem>
                   <MenuItem onClick={() => {this.handleClose(); this.updateUI({loadDialog: true})}}>Load</MenuItem>
                 </Menu>
-                <SaveDialog />
-                <LoadDialog />
             </div>
         )
     }

@@ -11,11 +11,15 @@ import { triggerAddItem } from '../actions/itemActions';
 import { withStyles } from '@material-ui/core/styles';
 import { guid } from '../utils/guid';
 import { Divider } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
+import SaveIcon from '@material-ui/icons/Save';
+import FolderIcon from '@material-ui/icons/Folder';
+import EditIcon from '@material-ui/icons/Edit';
+import { updateUi } from '../actions/uiActions';
 
 const styles = theme => ({
     root: {
         paddingTop: theme.spacing.unit * 2,
-        paddingRight: theme.spacing.unit * 2,
         display: 'flex',
         flexDirection: 'column'
     },
@@ -25,6 +29,12 @@ const styles = theme => ({
     itemList: {
         flexGrow: 1,
         overflowY: 'auto'
+    },
+    options: {
+    },
+    optionsButton: {
+        flex: 1,
+        textAlign: 'center'
     }
 })
 
@@ -50,6 +60,12 @@ class ListComponent extends Component {
     itemSelected() {
         const { onItemSelected = () => { } } = this.props;
         onItemSelected();
+    }
+
+    showDialog(dialog) {
+        this.props.dispatch(updateUi({
+            [dialog]: true
+        }))
     }
 
     render() {
@@ -87,8 +103,23 @@ class ListComponent extends Component {
                         )
                     })}
                 </div>
-                <div className={classes.options}>
-                </div>
+                <ListItem className={classes.options}>
+                    <div className={classes.optionsButton}>
+                        <IconButton aria-label="Save" onClick={() => this.showDialog('saveDialog')}>
+                            <SaveIcon />
+                        </IconButton>
+                    </div>
+                    <div className={classes.optionsButton}>
+                        <IconButton aria-label="Load" onClick={() => this.showDialog('loadDialog')}>
+                            <FolderIcon />
+                        </IconButton>
+                    </div>
+                    <div className={classes.optionsButton}>
+                        <IconButton aria-label="Edit" onClick={() => {}}>
+                            <EditIcon />
+                        </IconButton>
+                    </div>
+                </ListItem>
             </List>
         )
     }
