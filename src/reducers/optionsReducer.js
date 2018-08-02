@@ -3,7 +3,7 @@ import { REHYDRATE_STATE, RESET } from '../actions/startupActions'
 
 const initialState = {
     settings: {
-        displayPreview: false
+        displayPreview: true
     }
 }
 

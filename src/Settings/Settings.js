@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { getSettings } from '../reducers/optionsReducer';
 import { updateOptions } from '../actions/optionsActions';
-import { FormControlLabel, Switch } from '@material-ui/core';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 const BooleanSetting = ({ settings, name, onUpdate = () => {} }) => (
                 <FormControlLabel control={
@@ -22,7 +23,7 @@ class Settings extends Component {
     static mapDispatchToProps(dispatch) {
         return {
             updateSettings: (settings) => dispatch(updateOptions(settings))
-        }
+        } 
     }
 
     render() {

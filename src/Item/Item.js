@@ -1,23 +1,54 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
-import { Link } from 'react-router-dom';
-import { TextField, Button, Icon } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField'
+import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
+import Icon from '@material-ui/core/Icon'
+import { withStyles } from '@material-ui/core/styles';
+import { getAllItems } from '../reducers/itemReducer';
+import { push } from 'connected-react-router';
+import { triggerSaveItem, triggerDeleteItem } from '../actions/itemActions';
 
-const Display = ({id, title = '', content = '', tags = [], date = ''}) => (
-    <div>
-        <h1>{title}</h1>
-        <div>
-            <ReactMarkdown source={content} />
-        </div>
-        <Link to="?editing=true"><Button variant="fab" aria-label="Edit" color="secondary"><Icon>edit_icon</Icon></Button></Link>
-    </div>
-);
+const styles = theme => ({
+    root: {
+        paddingRight: theme.spacing.unit * 2,
+    },
+    editButton: {
+        position: 'absolute',
+        bottom: theme.spacing.unit * 4,
+        right: theme.spacing.unit * 4
+    }
+})
+
+class Display extends Component {
+    static styles = {
+        root: {
+
+        }
+    }
+
+    render() {
+        const { item = {}, onEdit, classes } = this.props;
+        return (
+            <div className={classes.root}>
+                <Typography variant="display2" gutterBottom>{item.title}</Typography>
+                <Typography gutterBottom>
+                    <ReactMarkdown source={item.content} />
+                </Typography>
+                <Button className={classes.editButton} onClick={() => onEdit()} variant="fab" aria-label="Edit" color="secondary"><Icon>edit_icon</Icon></Button>
+            </div>
+        );
+    }
+} 
+
+Display = withStyles(Display.styles)(Display);
 
 class Edit extends Component {
     changed(data) {
-        const { id, title, content, tags, date, saveItem = () => {} } = this.props
+        const { item: { id, title, content, tags, date }, onSave } = this.props
         
-        saveItem({
+        onSave({
             id,
             title,
             content,
@@ -28,14 +59,14 @@ class Edit extends Component {
     }
 
     render() {
-        const { title = '', content = '', deleteItem = () => {} } = this.props
+        const { item = {}, onDelete, onSaveClicked } = this.props
         return (
             <div>
-                <h1>{title}</h1>
+                <h1>{item.title}</h1>
                 <div>
                     <TextField
                         label="Title"
-                        value={title}
+                        value={item.title}
                         style = {{width: '100%'}}
                         onChange={e => this.changed({title: e.target.value})}
                         margin="normal"
@@ -43,29 +74,96 @@ class Edit extends Component {
                     <TextField
                         label="Content"
                         multiline
-                        value={content}
+                        value={item.content}
                         style = {{width: '100%'}}
                         onChange={e => this.changed({content: e.target.value})}
                         margin="normal"
                     />
                 </div>
-                <Link to="?"><Button variant="contained" color="primary">Save</Button></Link>
-                <Button onClick={() => deleteItem()} variant="contained" color="secondary">Delete</Button>
+                <Button onClick={() => onSaveClicked()} variant="contained" color="primary">Save</Button>&nbsp;
+                <Button onClick={() => onDelete()} variant="contained" color="secondary">Delete</Button>
             </div>
         );
     }
 }
 
-export default class Item extends Component {
+class Item extends Component {
+
+    state = {
+        editing: false
+    }
+
+    static mapStateToProps(state) {
+        return {
+            items: getAllItems(state.items)
+        }
+    }
+
+    getItem() {
+        const {
+            items = [],
+            match: { params: { id } }
+        } = this.props;
+        return items.find(i => i.id === id);
+    }
+
+    componentWillMount() {
+        const item = this.getItem();
+        console.log(item, this.props.items)
+        if (!item) {
+            // go back
+            this.goBack()
+        }
+    }
+
+    goBack() {
+        const {
+            dispatch
+        } = this.props;
+        dispatch(push('../'))
+    }
+
+    onEditClicked() {
+        this.setState({
+            editing: true
+        })
+    }
+
+    onSaveClicked() {
+        this.setState({
+            editing: false
+        })
+    }
+
+    save(data) {
+        this.props.dispatch(triggerSaveItem(data))
+    }
+
+    delete(item) {
+        this.props.dispatch(triggerDeleteItem(item))
+        this.goBack();
+    }
+
     render() {
         const {
-            editing = false
+            classes
         } = this.props;
 
+        const {
+            editing
+        } = this.state;
+
+        const item = this.getItem();
+
         return (
-            <div style={{padding: '1rem'}}>
-                {editing === false ? <Display {...this.props} /> : <Edit {...this.props} />}
+            <div className={classes.root}>
+                {editing ?
+                    <Edit {...this.props} item={item} onSave={(data) => this.save(data)} onDelete={() => this.delete(item)} onSaveClicked={() => this.onSaveClicked()} /> :
+                    <Display {...this.props} item={item} onEdit={() => this.onEditClicked()} />
+                }
             </div>
         );
     }
 }
+
+export default connect(Item.mapStateToProps)(withStyles(styles)(Item));

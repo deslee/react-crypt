@@ -28,6 +28,3 @@ export const createNewJournal = () => dispatch => {
         ]
     })
 }
-
-export const UPDATE_PASSWORD = 'UPDATE_PASSWORD';
-export const updatePassword = createAction(UPDATE_PASSWORD);

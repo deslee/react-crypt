@@ -24,6 +24,7 @@ class Load extends Component {
     }
 
     loadFile(files) {
+        this.hideError();
         if (files.length < 1) {
             this.showError('Invalid file');
             return;
@@ -49,18 +50,32 @@ class Load extends Component {
     }
 
     loadState() {
+        this.hideError();
         const { fileContents } = this.state
         const { password } = this.props
-        console.log(fileContents);
-        const decrypted = decrypt(password, fileContents);
-        console.log(decrypted)
-        this.props.dispatch(rehydrateState(decrypted));
+        
+        try {
+            const decrypted = decrypt(password, fileContents);
+            this.props.dispatch(rehydrateState(decrypted));
+        } catch(e) {
+            if (e && e.message && e.message === "ccm: tag doesn't match") {
+                this.showError('Wrong password')
+            } else if (e && e.message && e.message === "json decode: this isn't json!") {
+                this.showError('Invalid file')
+            }
+        }
     }
 
     showError(message) {
         this.setState({
             errorMessage: message
         });
+    }
+
+    hideError() {
+        this.setState({
+            errorMessage: ''
+        })
     }
 
     render() {
@@ -71,7 +86,6 @@ class Load extends Component {
                 <input type="password" onChange={e => this.props.dispatch(updatePassword(e.target.value))} /><br />
                 <button onClick={e => this.loadState()}>Load</button><br />
                 <span>{this.state.errorMessage}</span>
-                {this.state.fileContents.length}
             </div>
         )
     }

@@ -4,17 +4,18 @@ import {
   Redirect,
   withRouter
 } from 'react-router-dom'
-import { parse as qs } from 'query-string';
-import Layout from './Layout';
+import thunk from 'redux-thunk';
 import { Provider, connect } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import rootReducer, { persistState } from './reducers';
 import { connectRouter, routerMiddleware, ConnectedRouter as Router } from 'connected-react-router'
 import { createBrowserHistory } from 'history'
 import { composeWithDevTools } from 'redux-devtools-extension';
-import thunk from 'redux-thunk';
-import { isInitialized, isDecrypted } from './reducers/startupReducer';
-import Load from './SaveAndLoad/Load';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Layout from './Layout/Layout';
+import { getAllItems } from './reducers/itemReducer';
+import { triggerAddItem } from './actions/itemActions';
+import { guid } from './utils/guid';
 
 export const STATE_STORAGE_KEY = 'STATE_STORAGE_KEY';
 const history = createBrowserHistory();
@@ -56,50 +57,41 @@ export function clearStorage() {
   sessionStorage.removeItem(STATE_STORAGE_KEY);
 }
 
-const Initialize = () => (
-  <div>
-    <Redirect to="/" />
-    <Load />
-  </div>
-);
-
 class AppComponent extends Component {
   static mapStateToProps(state) {
     return {
-      initialized: isInitialized(state.startup),
-      decrypted: isDecrypted(state.startup)
+      items: getAllItems(state.items)
     };
   }
 
-  render() {
-    const { initialized, decrypted } = this.props;
+  componentWillMount() {
+    const { items, dispatch } = this.props
+    if (items.length === 0) {
+      dispatch(triggerAddItem({
+        id: guid(),
+        title: 'Hello world!',
+        content: 'Hello world! This is an example entry',
+        tags: [],
+        date: ''
+      }))
+    }
+  }
 
+  render() {
     return (
       <div>
-        { !initialized && <Initialize /> }
-        { initialized && decrypted && <div>
+        <CssBaseline />
+        <div>
           <Route exact path="/" render={() => (
             <Redirect to="/items" />
           )} />
-          <Route path="/items/:id?" render={(props) => {
-            let {
-              match: {
-                params: { id: itemId }
-              },
-              location: { search },
-            } = props;
-
-            search = qs(search);
-
+          <Route path="/items" render={(props) => {
             return (<div>
-              <Layout
-                selectedItemId={itemId}
-                isEditingSelectedItem={search.editing}
-              />
+              <Layout />
             </div>)
           }} />
-        </div>}
-      </div>  
+        </div>
+      </div>
     )
   }
 }
