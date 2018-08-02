@@ -5,15 +5,17 @@ import { withStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Drawer from '@material-ui/core/Drawer';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import AppMenu from './AppMenu';
 import List from '../List/List';
 import Item from '../Item/Item';
 import { getAllItems } from '../reducers/itemReducer';
+
+const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 const drawerWidth = 300;
 
@@ -53,6 +55,8 @@ const styles = theme => ({
     overflowY: 'auto',
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
+    display: 'flex',
+    flexDirection: 'column'
   },
   flex: {
     flexGrow: 1
@@ -65,6 +69,9 @@ const styles = theme => ({
     display: 'flex',
     height: '100%',
     flexDirection: 'column'
+  },
+  innerContent: {
+    flex: 1
   }
 })
 
@@ -145,21 +152,23 @@ class Layout extends Component {
             <Typography variant="title" color="inherit" className={classes.flex}>
               My App
               </Typography>
-            {/* <AppMenu /> */}
           </Toolbar>
         </AppBar>
         <Hidden mdUp>
-          <Drawer
+          <SwipeableDrawer
             variant="temporary"
             anchor="left"
             open={this.state.mobileOpen}
+            onOpen={this.handleDrawerToggle}
             onClose={this.handleDrawerToggle}
+            disableBackdropTransition={!iOS} 
+            disableDiscovery={iOS} 
             classes={{
               paper: classes.drawerPaper,
             }}
           >
             {drawer}
-          </Drawer>
+          </SwipeableDrawer>
         </Hidden>
         <Hidden smDown implementation="css">
           <Drawer
@@ -174,7 +183,9 @@ class Layout extends Component {
         </Hidden>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <Route path={`${match.url}/:id`} component={Item} />
+          <div className={classes.innerContent} >
+            <Route path={`${match.url}/:id`} component={Item} />
+          </div>
         </main>
       </div>
     );

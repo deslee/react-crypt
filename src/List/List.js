@@ -4,14 +4,17 @@ import { Link } from 'react-router-dom';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Checkbox from '@material-ui/core/Checkbox';
 import NewItemIcon from '@material-ui/icons/NoteAdd';
 import { getSettings } from '../reducers/optionsReducer';
 import blueGrey from '@material-ui/core/colors/blueGrey';
-import { triggerAddItem } from '../actions/itemActions';
+import { triggerAddItem, triggerDeleteItem } from '../actions/itemActions';
 import { withStyles } from '@material-ui/core/styles';
 import { guid } from '../utils/guid';
 import { Divider } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
+import CancelIcon from '@material-ui/icons/Cancel';
+import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
 import FolderIcon from '@material-ui/icons/Folder';
 import EditIcon from '@material-ui/icons/Edit';
@@ -35,10 +38,21 @@ const styles = theme => ({
     optionsButton: {
         flex: 1,
         textAlign: 'center'
-    }
+    },
+    mainListItem: {
+        maxHeight: '68px',
+    },
 })
 
 class ListComponent extends Component {
+
+    state = {
+        isEditing: false,
+        itemsBeingEdited: {
+
+        }
+    }
+
     static mapStateToProps(state) {
         return {
             settings: getSettings(state.options)
@@ -57,15 +71,48 @@ class ListComponent extends Component {
         onItemAdded();
     }
 
-    itemSelected() {
+    itemSelected(id) {
         const { onItemSelected = () => { } } = this.props;
-        onItemSelected();
+        onItemSelected(id);
+    }
+
+    toggleEdit = id => {
+        this.setState(state => ({
+            ...state,
+            itemsBeingEdited: {
+                ...state.itemsBeingEdited,
+                [id]: state.itemsBeingEdited[id] ? false : true
+            }
+        }))
+    }
+
+    toggleEditing = () => {
+        this.setState(state => ({
+            ...state,
+            isEditing: !state.isEditing,
+            itemsBeingEdited: {}
+        }))
     }
 
     showDialog(dialog) {
         this.props.dispatch(updateUi({
             [dialog]: true
         }))
+    }
+
+    deleteSelected = () => {
+        const { 
+            items,
+            dispatch
+        } = this.props;
+        const {
+            itemsBeingEdited
+        } = this.state;
+        const idsToDelete = Object.keys(itemsBeingEdited).filter(id => itemsBeingEdited[id]);
+        const itemsToDelete = items.filter(i => idsToDelete.indexOf(i.id) !== -1);
+        itemsToDelete.forEach(item => {
+            dispatch(triggerDeleteItem(item))
+        })
     }
 
     render() {
@@ -75,6 +122,11 @@ class ListComponent extends Component {
             classes,
             style
         } = this.props;
+
+        const {
+            isEditing,
+            itemsBeingEdited
+        } = this.state;
 
         return (
             <List className={classes.root} style={style}>
@@ -93,32 +145,52 @@ class ListComponent extends Component {
                         return (
                             <ListItem
                                 key={id}
-                                component={Link}
+                                className={classes.mainListItem}
+                                component={isEditing ? undefined : Link}
                                 to={`/items/${id}`}
-                                onClick={() => this.itemSelected()}
+                                onClick={() => isEditing ? this.toggleEdit(id) : this.itemSelected(id)}
                                 button
                             >
-                                <ListItemText primary={title} secondary={settings.displayPreview && preview} />
+                                { isEditing && <Checkbox
+                                    checked={Boolean(itemsBeingEdited[id])}
+                                    disableRipple
+                                /> }
+                                <ListItemText secondaryTypographyProps={{style: {overflow: 'hidden', maxHeight: '1rem'}}} primary={title} secondary={settings.displayPreview && preview} />
                             </ListItem>
                         )
                     })}
                 </div>
                 <ListItem className={classes.options}>
-                    <div className={classes.optionsButton}>
-                        <IconButton aria-label="Save" onClick={() => this.showDialog('saveDialog')}>
-                            <SaveIcon />
-                        </IconButton>
-                    </div>
-                    <div className={classes.optionsButton}>
-                        <IconButton aria-label="Load" onClick={() => this.showDialog('loadDialog')}>
-                            <FolderIcon />
-                        </IconButton>
-                    </div>
-                    <div className={classes.optionsButton}>
-                        <IconButton aria-label="Edit" onClick={() => {}}>
-                            <EditIcon />
-                        </IconButton>
-                    </div>
+                    {
+                        (isEditing ? [
+                            <div key="Save" className={classes.optionsButton}>
+                                <IconButton aria-label="Save" onClick={() => this.deleteSelected()}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </div>,
+                            <div key="Cancel" className={classes.optionsButton}>
+                                <IconButton aria-label="Cancel" onClick={() => this.toggleEditing()}>
+                                    <CancelIcon />
+                                </IconButton>
+                            </div>
+                        ] : [
+                            <div key="Save" className={classes.optionsButton}>
+                                <IconButton aria-label="Save" onClick={() => this.showDialog('saveDialog')}>
+                                    <SaveIcon />
+                                </IconButton>
+                            </div>,
+                            <div key="Load" className={classes.optionsButton}>
+                                <IconButton aria-label="Load" onClick={() => this.showDialog('loadDialog')}>
+                                    <FolderIcon />
+                                </IconButton>
+                            </div>,
+                            <div key="Edit" className={classes.optionsButton}>
+                                <IconButton aria-label="Edit" onClick={() => this.toggleEditing()}>
+                                    <EditIcon />
+                                </IconButton>
+                            </div>
+                        ])
+                    }
                 </ListItem>
             </List>
         )

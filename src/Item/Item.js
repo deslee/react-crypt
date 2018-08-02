@@ -10,12 +10,6 @@ import { getAllItems } from '../reducers/itemReducer';
 import { push } from 'connected-react-router';
 import { triggerSaveItem, triggerDeleteItem } from '../actions/itemActions';
 
-const styles = theme => ({
-    root: {
-        paddingRight: theme.spacing.unit * 2,
-    }
-})
-
 class Display extends Component {
     static styles = theme => ({
         root: {
@@ -46,6 +40,20 @@ class Display extends Component {
 Display = withStyles(Display.styles)(Display);
 
 class Edit extends Component {
+    static styles = theme => ({
+        root: {
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%'
+        },
+        contentTextArea: {
+            flex: 1
+        },
+        deleteButton: {
+            float: 'right'
+        }
+    })
+
     changed(data) {
         const { item: { id, title, content, tags, date }, onSave } = this.props
         
@@ -60,34 +68,44 @@ class Edit extends Component {
     }
 
     render() {
-        const { item = {}, onDelete, onSaveClicked } = this.props
+        const { item = {}, onDelete, onSaveClicked, classes } = this.props
         return (
-            <div>
-                <div>
-                    <TextField
-                        label="Title"
-                        value={item.title}
-                        style = {{width: '100%'}}
-                        onChange={e => this.changed({title: e.target.value})}
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Content"
-                        multiline
-                        value={item.content}
-                        style = {{width: '100%'}}
-                        onChange={e => this.changed({content: e.target.value})}
-                        margin="normal"
-                    />
+            <div className={classes.root}>
+                <TextField
+                    label="Title"
+                    value={item.title}
+                    style = {{width: '100%'}}
+                    onChange={e => this.changed({title: e.target.value})}
+                    margin="normal"
+                />
+                <TextField
+                    label="Content"
+                    multiline
+                    className={classes.contentTextArea}
+                    value={item.content}
+                    style = {{width: '100%'}}
+                    onChange={e => this.changed({content: e.target.value})}
+                    margin="normal"
+                />
+                <div className={classes.buttons}>
+                    <Button className={classes.saveButton} onClick={() => onSaveClicked()} variant="contained" color="primary">Save</Button>&nbsp;
+                    <Button className={classes.deleteButton} onClick={() => onDelete()} variant="contained" color="secondary">Delete</Button>
                 </div>
-                <Button onClick={() => onSaveClicked()} variant="contained" color="primary">Save</Button>&nbsp;
-                <Button onClick={() => onDelete()} variant="contained" color="secondary">Delete</Button>
             </div>
         );
     }
 }
 
+Edit = withStyles(Edit.styles)(Edit);
+
 class Item extends Component {
+
+    static styles = theme => ({
+        root: {
+            paddingRight: theme.spacing.unit * 2,
+            height: '100%'
+        }
+    })
 
     state = {
         editing: false
@@ -145,7 +163,8 @@ class Item extends Component {
 
     render() {
         const {
-            classes
+            classes,
+            ...rest
         } = this.props;
 
         const {
@@ -157,12 +176,12 @@ class Item extends Component {
         return (
             <div className={classes.root}>
                 {editing ?
-                    <Edit {...this.props} item={item} onSave={(data) => this.save(data)} onDelete={() => this.delete(item)} onSaveClicked={() => this.onSaveClicked()} /> :
-                    <Display {...this.props} item={item} onEdit={() => this.onEditClicked()} />
+                    <Edit {...rest} item={item} onSave={(data) => this.save(data)} onDelete={() => this.delete(item)} onSaveClicked={() => this.onSaveClicked()} /> :
+                    <Display {...rest} item={item} onEdit={() => this.onEditClicked()} />
                 }
             </div>
         );
     }
 }
 
-export default connect(Item.mapStateToProps)(withStyles(styles)(Item));
+export default connect(Item.mapStateToProps)(withStyles(Item.styles)(Item));
