@@ -12,6 +12,7 @@ import AppMenu from './AppMenu';
 import List from '../List/List';
 import Item from '../Item/Item';
 import { Drawer, TextField } from '@material-ui/core';
+import { getAllItems } from '../reducers/itemReducer';
 
 const drawerWidth = 300;
 
@@ -66,11 +67,13 @@ const styles = theme => ({
 
 class Layout extends Component {
   state = {
-    mobileOpen: false
+    mobileOpen: false,
+    searchField: ''
   }
 
   static mapStateToProps(state) {
     return {
+      items: getAllItems(state.items)
     }
   }
 
@@ -81,6 +84,26 @@ class Layout extends Component {
 
   handleDrawerToggle = () => {
     this.setState(state => ({ mobileOpen: !state.mobileOpen }))
+  }
+
+  searchChanged = (searchText) => {
+    this.setState({searchField: searchText})
+  }
+
+  getFilteredItems = () => {
+    const {
+      items
+    } = this.props;
+
+    const {
+      searchField
+    } = this.state;
+
+    console.log(items)
+
+    return items.filter(i => {
+      return (i.title.toLowerCase() + i.content.toLowerCase()).indexOf(searchField.toLowerCase()) !== -1
+    })
   }
 
   render() {
@@ -98,12 +121,15 @@ class Layout extends Component {
             style={{ width: '100%' }}
             label="Search"
             margin="normal"
+            value={this.state.searchField}
+            onChange={e => this.searchChanged(e.target.value)}
           />
         </div>
         <List
           style={{flexGrow: 1}}
           onItemAdded={() => this.handleDrawerToggle()}
           onItemSelected={() => this.handleDrawerToggle()}
+          items={this.getFilteredItems()}
         />
       </div>
     )

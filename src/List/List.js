@@ -5,7 +5,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import NewItemIcon from '@material-ui/icons/NoteAdd';
-import { getAllItems } from '../reducers/itemReducer';
 import { getSettings } from '../reducers/optionsReducer';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import { triggerAddItem } from '../actions/itemActions';
@@ -32,7 +31,6 @@ const styles = theme => ({
 class ListComponent extends Component {
     static mapStateToProps(state) {
         return {
-            items: getAllItems(state.items),
             settings: getSettings(state.options)
         }
     }
