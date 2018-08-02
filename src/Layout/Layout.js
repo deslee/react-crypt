@@ -49,7 +49,6 @@ const styles = theme => ({
   content: {
     flexGrow: 1,
     overflowY: 'auto',
-    height: '100vh',
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
   },
@@ -99,8 +98,6 @@ class Layout extends Component {
     const {
       searchField
     } = this.state;
-
-    console.log(items)
 
     return items.filter(i => {
       return (i.title.toLowerCase() + i.content.toLowerCase()).indexOf(searchField.toLowerCase()) !== -1
