@@ -48,6 +48,7 @@ const styles = theme => ({
     }
   },
   content: {
+    height: '100vh',
     flexGrow: 1,
     overflowY: 'auto',
     backgroundColor: theme.palette.background.default,
