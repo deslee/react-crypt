@@ -120,7 +120,7 @@ class Item extends Component {
     getItem() {
         const {
             items = [],
-            match: { params: { id } }
+            itemId: id
         } = this.props;
         return items.find(i => i.id === id);
     }

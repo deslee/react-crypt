@@ -87,7 +87,7 @@ class AppComponent extends Component {
           <Route exact path="/" render={() => (
             <Redirect to="/items" />
           )} />
-          <Route path="/items" render={(props) => {
+          <Route path="/items/:id?" render={(props) => {
             return (<div>
               <Layout />
             </div>)

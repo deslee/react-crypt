@@ -8,6 +8,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import NewItemIcon from '@material-ui/icons/NoteAdd';
 import { getSettings } from '../reducers/optionsReducer';
 import blueGrey from '@material-ui/core/colors/blueGrey';
+import grey from '@material-ui/core/colors/grey';
 import { triggerAddItem, triggerDeleteItem } from '../actions/itemActions';
 import { withStyles } from '@material-ui/core/styles';
 import { guid } from '../utils/guid';
@@ -41,6 +42,12 @@ const styles = theme => ({
     },
     mainListItem: {
         maxHeight: '68px',
+    },
+    mainListItemSelected: {
+        '&:hover': {
+            background: grey[200]
+        },
+        background: grey[200]
     },
 })
 
@@ -120,7 +127,8 @@ class ListComponent extends Component {
             items,
             settings,
             classes,
-            style
+            style,
+            selectedItemId
         } = this.props;
 
         const {
@@ -145,8 +153,9 @@ class ListComponent extends Component {
                         return (
                             <ListItem
                                 key={id}
-                                className={classes.mainListItem}
+                                className={classes.mainListItem + (selectedItemId === id ? ` ${classes.mainListItemSelected}` : '')}
                                 component={isEditing ? undefined : Link}
+                                replace={selectedItemId !== undefined}
                                 to={`/items/${id}`}
                                 onClick={() => isEditing ? this.toggleEdit(id) : this.itemSelected(id)}
                                 button

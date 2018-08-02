@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter, Route } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
@@ -117,7 +117,7 @@ class Layout extends Component {
   render() {
     const {
       classes,
-      match
+      match: { params: { id: itemId }}
     } = this.props;
 
     const drawer = (
@@ -138,6 +138,7 @@ class Layout extends Component {
           onItemAdded={() => this.handleDrawerToggle()}
           onItemSelected={() => this.handleDrawerToggle()}
           items={this.getFilteredItems()}
+          selectedItemId={itemId}
         />
       </div>
     )
@@ -184,7 +185,7 @@ class Layout extends Component {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <div className={classes.innerContent} >
-            <Route path={`${match.url}/:id`} component={Item} />
+            { itemId && <Item itemId={itemId} />}
           </div>
         </main>
       </div>
