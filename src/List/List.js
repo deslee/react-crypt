@@ -153,9 +153,9 @@ class ListComponent extends Component {
                         return (
                             <ListItem
                                 key={id}
-                                className={classes.mainListItem + (selectedItemId === id ? ` ${classes.mainListItemSelected}` : '')}
+                                className={classes.mainListItem + (!isEditing && selectedItemId === id ? ` ${classes.mainListItemSelected}` : '')}
                                 component={isEditing ? undefined : Link}
-                                replace={selectedItemId !== undefined}
+                                replace={isEditing ? undefined : selectedItemId !== undefined}
                                 to={`/items/${id}`}
                                 onClick={() => isEditing ? this.toggleEdit(id) : this.itemSelected(id)}
                                 button
