@@ -48,6 +48,8 @@ const styles = theme => ({
   },
   content: {
     flexGrow: 1,
+    overflowY: 'auto',
+    height: '100vh',
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
   },
@@ -59,7 +61,6 @@ const styles = theme => ({
     paddingRight: theme.spacing.unit * 2
   },
   drawer: {
-    height: '100%',
     display: 'flex',
     flexDirection: 'column'
   }
