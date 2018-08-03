@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
+import Typography from '@material-ui/core/Typography'
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -16,12 +17,19 @@ import { rehydrateState } from '../actions/optionsActions';
 const styles = {
     errorMessage: {
         color: red[500]
+    },
+    actualFileInput: {
+        display: 'none'
+    },
+    fileName: {
+        margin: '1rem 0'
     }
 }
 
 class LoadDialog extends React.Component {
     state = {
         fileContents: '',
+        fileName: '',
         errorMessage: '',
         password: ''
     }
@@ -63,6 +71,7 @@ class LoadDialog extends React.Component {
                 const fileContents = reader.result;
                 JSON.parse(fileContents);
                 this.setState({
+                    fileName: file.name,
                     fileContents: fileContents
                 });
             } catch(e) {
@@ -103,6 +112,7 @@ class LoadDialog extends React.Component {
 
     render() {
         const { open = false, classes } = this.props;
+        const { fileName, errorMessage, password } = this.state;
         return (
             <div>
                 <Dialog
@@ -115,20 +125,27 @@ class LoadDialog extends React.Component {
                         <DialogContent>
                             <DialogContentText>
                                 Load a previously saved journal<br />
-                                <span className={classes.errorMessage}>{this.state.errorMessage}</span>
+                                <span className={classes.errorMessage}>{errorMessage}</span>
                             </DialogContentText>
-                            <input type="file" onChange={e => this.loadFile(e.target.files)} /><br />
-                                <TextField
-                                    autoFocus
-                                    margin="dense"
-                                    required={true}
-                                    id="password"
-                                    label="Password"
-                                    type="password"
-                                    value={this.state.password}
-                                    onChange={e => this.passwordChange(e.target.value)}
-                                    fullWidth
-                                />
+                            <input className={classes.actualFileInput} id="load-dialog-file-input" name="load-dialog-file-input" type="file" onChange={e => this.loadFile(e.target.files)} />
+                            <label htmlFor="load-dialog-file-input">
+                                <Button variant="raised" component="span">
+                                    Select a file
+                                </Button>
+                            </label>
+                            <Typography className={classes.fileName}>{fileName}</Typography>
+                            <br />
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                required={true}
+                                id="password"
+                                label="Password"
+                                type="password"
+                                value={password}
+                                onChange={e => this.passwordChange(e.target.value)}
+                                fullWidth
+                            />
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={() => this.handleClose()} color="primary">

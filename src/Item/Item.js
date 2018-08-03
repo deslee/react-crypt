@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
-import Icon from '@material-ui/core/Icon'
+import EditIcon from '@material-ui/icons/Edit';
 import { withStyles } from '@material-ui/core/styles';
 import { getAllItems } from '../reducers/itemReducer';
 import { push } from 'connected-react-router';
@@ -18,7 +18,8 @@ class Display extends Component {
         editButton: {
             position: 'absolute',
             bottom: theme.spacing.unit * 4,
-            right: theme.spacing.unit * 4
+            right: theme.spacing.unit * 4,
+            color: theme.palette.secondary.contrastText
         },
         content: {
             ...theme.typography.body1
@@ -31,7 +32,7 @@ class Display extends Component {
             <div className={classes.root}>
                 <Typography variant="display2" gutterBottom>{item.title}</Typography>
                 <ReactMarkdown className={classes.content} source={item.content} />
-                <Button className={classes.editButton} onClick={() => onEdit()} variant="fab" aria-label="Edit" color="secondary"><Icon>edit_icon</Icon></Button>
+                <Button className={classes.editButton} onClick={() => onEdit()} variant="fab" aria-label="Edit" color="secondary"><EditIcon /></Button>
             </div>
         );
     }

@@ -190,7 +190,7 @@ class Layout extends Component {
               <MenuIcon />
             </IconButton>
             <Typography variant="title" color="inherit" className={classes.flex}>
-              My App
+              MicroJournal
             </Typography>
             <AppMenu />
           </Toolbar>

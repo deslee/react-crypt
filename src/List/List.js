@@ -8,11 +8,10 @@ import Checkbox from '@material-ui/core/Checkbox';
 import NewItemIcon from '@material-ui/icons/NoteAdd';
 import { getSettings } from '../reducers/optionsReducer';
 import blueGrey from '@material-ui/core/colors/blueGrey';
-import grey from '@material-ui/core/colors/grey';
 import { triggerAddItem, triggerDeleteItem } from '../actions/itemActions';
 import { withStyles } from '@material-ui/core/styles';
 import { guid } from '../utils/guid';
-import { Divider } from '@material-ui/core';
+import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import CancelIcon from '@material-ui/icons/Cancel';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -21,35 +20,49 @@ import FolderIcon from '@material-ui/icons/Folder';
 import EditIcon from '@material-ui/icons/Edit';
 import { updateUi } from '../actions/uiActions';
 
-const styles = theme => ({
-    root: {
-        paddingTop: theme.spacing.unit * 2,
-        display: 'flex',
-        flexDirection: 'column'
-    },
-    newItemIcon: {
-        color: blueGrey[400]
-    },
-    itemList: {
-        flexGrow: 1,
-        overflowY: 'auto'
-    },
-    options: {
-    },
-    optionsButton: {
-        flex: 1,
-        textAlign: 'center'
-    },
-    mainListItem: {
-        maxHeight: '68px',
-    },
-    mainListItemSelected: {
-        '&:hover': {
-            background: grey[200]
+const styles = theme => {
+    const listItemTextColor = theme.palette.primary.light;
+    return {
+        root: {
+            paddingTop: theme.spacing.unit * 2,
+            display: 'flex',
+            flexDirection: 'column'
         },
-        background: grey[200]
-    },
-})
+        newItemIcon: {
+            color: blueGrey[400]
+        },
+        itemList: {
+            flexGrow: 1,
+            overflowY: 'auto'
+        },
+        options: {
+        },
+        optionsButton: {
+            flex: 1,
+            textAlign: 'center'
+        },
+        mainListItem: {
+            maxHeight: '68px',
+        },
+        listItemTextPrimary: {
+        },
+        listItemTextSecondary: {
+            overflow: 'hidden',
+            maxHeight: '1.2rem',
+        },
+        mainListItemSelected: {
+            '&:hover': {
+                background: listItemTextColor,
+                color: theme.palette.getContrastText(listItemTextColor)
+            },
+            background: listItemTextColor,
+            color: theme.palette.getContrastText(listItemTextColor),
+            '& $listItemTextSecondary, & $listItemTextPrimary': {
+                color: theme.palette.getContrastText(listItemTextColor)
+            }
+        }
+    }
+}
 
 class ListComponent extends Component {
 
@@ -165,7 +178,12 @@ class ListComponent extends Component {
                                     checked={Boolean(itemsBeingEdited[id])}
                                     disableRipple
                                 /> }
-                                <ListItemText secondaryTypographyProps={{style: {overflow: 'hidden', maxHeight: '1.2rem'}}} primary={title} secondary={settings.displayPreview && preview} />
+                                <ListItemText
+                                    primary={title}
+                                    primaryTypographyProps={{ className: classes.listItemTextPrimary }}
+                                    secondary={settings.displayPreview && preview}
+                                    secondaryTypographyProps={{ className: classes.listItemTextSecondary }}
+                                />
                             </ListItem>
                         )
                     })}

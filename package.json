@@ -8,6 +8,7 @@
     "connected-react-router": "^4.3.0",
     "history": "^4.7.2",
     "lodash": "^4.17.10",
+    "moment": "^2.22.2",
     "query-string": "^6.1.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
@@ -19,7 +20,8 @@
     "redux": "^4.0.0",
     "redux-devtools-extension": "^2.13.5",
     "redux-thunk": "^2.3.0",
-    "sjcl": "^1.0.7"
+    "sjcl": "^1.0.7",
+    "typeface-roboto": "^0.0.54"
   },
   "scripts": {
     "start": "react-scripts start",

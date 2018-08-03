@@ -8,6 +8,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import * as moment from 'moment';
 import { updateUi } from '../actions/uiActions';
 import { persistState } from '../reducers';
 
@@ -21,6 +22,14 @@ class SaveDialog extends React.Component {
         return {
             stateToSave: persistState(state),
             open: state.ui.saveDialog
+        }
+    }
+
+    componentWillReceiveProps(nextProps = {}) {
+        if (!this.props.open && nextProps.open) {
+            this.setState({
+                filename: `journal-${moment().format('YYYY-MM-DD-HH-mm-ss')}.json`
+            })
         }
     }
 

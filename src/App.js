@@ -7,10 +7,12 @@ import {
 import thunk from 'redux-thunk';
 import { Provider, connect } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
-import rootReducer, { persistState } from './reducers';
+import rootReducer from './reducers';
 import { connectRouter, routerMiddleware, ConnectedRouter as Router, push } from 'connected-react-router'
 import { createBrowserHistory } from 'history'
 import { composeWithDevTools } from 'redux-devtools-extension';
+import primary from '@material-ui/core/colors/green';
+import secondary from '@material-ui/core/colors/orange';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Layout from './Layout/Layout';
 import { getAllItems } from './reducers/itemReducer';
@@ -18,23 +20,14 @@ import { triggerAddItem } from './actions/itemActions';
 import { guid } from './utils/guid';
 import LoadDialog from './dialogs/LoadDialog';
 import SaveDialog from './dialogs/SaveDialog';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import { persistToStorage, getPreloadedState } from './persist';
 
-export const STATE_STORAGE_KEY = 'STATE_STORAGE_KEY';
 const history = createBrowserHistory();
-
-var preloadedState = {}
-const preloadedStateJson = sessionStorage.getItem(STATE_STORAGE_KEY);
-if (preloadedStateJson && preloadedStateJson.length) {
-  try {
-    preloadedState = JSON.parse(preloadedStateJson);
-  } catch (e) {
-    console.error(e);
-  }
-}
 
 const store = createStore(
   connectRouter(history)(rootReducer),
-  preloadedState,
+  getPreloadedState() || {},
   composeWithDevTools(
     applyMiddleware(
       routerMiddleware(history),
@@ -44,20 +37,21 @@ const store = createStore(
   )
 );
 
-function persistToStorage({ getState }) {
-  return next => action => {
-    const returnValue = next(action);
-    var persistedState = JSON.stringify(
-      persistState(getState())
-    )
-    sessionStorage.setItem(STATE_STORAGE_KEY, persistedState)
-    return returnValue;
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      ...primary,
+      contrastText: 'white'
+    },
+    secondary: {
+      ...secondary,
+      contrastText: 'white'
+    },
+    contrastThreshold: 3
   }
-}
+});
 
-export function clearStorage() {
-  sessionStorage.removeItem(STATE_STORAGE_KEY);
-}
+console.log(theme)
 
 class AppComponent extends Component {
   static mapStateToProps(state) {
@@ -83,7 +77,7 @@ class AppComponent extends Component {
 
   render() {
     return (
-      <div>
+      <MuiThemeProvider theme={theme}>
         <CssBaseline />
         <div>
           <Route exact path="/" render={() => (
@@ -97,7 +91,7 @@ class AppComponent extends Component {
         </div>
         <SaveDialog />
         <LoadDialog />
-      </div>
+      </MuiThemeProvider>
     )
   }
 }
