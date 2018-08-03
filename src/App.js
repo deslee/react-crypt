@@ -8,7 +8,7 @@ import thunk from 'redux-thunk';
 import { Provider, connect } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import rootReducer, { persistState } from './reducers';
-import { connectRouter, routerMiddleware, ConnectedRouter as Router } from 'connected-react-router'
+import { connectRouter, routerMiddleware, ConnectedRouter as Router, push } from 'connected-react-router'
 import { createBrowserHistory } from 'history'
 import { composeWithDevTools } from 'redux-devtools-extension';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -69,13 +69,15 @@ class AppComponent extends Component {
   componentWillMount() {
     const { items, dispatch } = this.props
     if (items.length === 0) {
+      const id = guid();
       dispatch(triggerAddItem({
-        id: guid(),
+        id: id,
         title: 'Hello world!',
         content: 'Hello world! This is an example entry',
         tags: [],
         date: ''
-      }))
+      }));
+      dispatch(push(`/items/${id}`));
     }
   }
 

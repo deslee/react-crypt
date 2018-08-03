@@ -3,12 +3,19 @@ import { connect } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import Switch from '@material-ui/core/Switch'
 import MoreVert from '@material-ui/icons/MoreVert';
 import { updateUi } from '../actions/uiActions';
-import SaveDialog from '../dialogs/SaveDialog';
-import LoadDialog from '../dialogs/LoadDialog';
+import { getSettings } from '../reducers/optionsReducer';
+import { updateOptions } from '../actions/optionsActions';
 
 class AppMenu extends Component {
+
+    static mapStateToProps(state) {
+        return {
+            settings: getSettings(state.options)
+        }
+    }
 
     state = {
         anchorEl: null
@@ -26,7 +33,16 @@ class AppMenu extends Component {
         this.props.dispatch(updateUi(ui));
     }
 
+    toggleSetting = setting => {
+        const { dispatch, settings } = this.props;
+        const newValue = !settings[setting];
+        dispatch(updateOptions({
+            [setting]: newValue
+        }))
+    }
+
     render() {
+        const { settings } = this.props;
         const { anchorEl } = this.state;
         const open = Boolean(anchorEl);
 
@@ -54,12 +70,11 @@ class AppMenu extends Component {
                     open={open}
                     onClose={this.handleClose}
                 >
-                  <MenuItem onClick={() => {this.handleClose(); this.updateUI({saveDialog: true})}}>Save</MenuItem>
-                  <MenuItem onClick={() => {this.handleClose(); this.updateUI({loadDialog: true})}}>Load</MenuItem>
+                <MenuItem onClick={() => this.toggleSetting('displayPreview')}><Switch checked={settings.displayPreview} /> Display Preview</MenuItem>
                 </Menu>
             </div>
         )
     }
 }
 
-export default connect()(AppMenu);
+export default connect(AppMenu.mapStateToProps)(AppMenu);

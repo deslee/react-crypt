@@ -68,14 +68,15 @@ class ListComponent extends Component {
 
     addItem() {
         const { dispatch, onItemAdded = () => { } } = this.props;
+        const id = guid();
         dispatch(triggerAddItem({
-            id: guid(),
+            id: id,
             title: 'Untitled',
             content: 'Hello world! This is an example entry',
             tags: [],
             date: ''
         }))
-        onItemAdded();
+        onItemAdded(id);
     }
 
     itemSelected(id) {
@@ -164,7 +165,7 @@ class ListComponent extends Component {
                                     checked={Boolean(itemsBeingEdited[id])}
                                     disableRipple
                                 /> }
-                                <ListItemText secondaryTypographyProps={{style: {overflow: 'hidden', maxHeight: '1rem'}}} primary={title} secondary={settings.displayPreview && preview} />
+                                <ListItemText secondaryTypographyProps={{style: {overflow: 'hidden', maxHeight: '1.2rem'}}} primary={title} secondary={settings.displayPreview && preview} />
                             </ListItem>
                         )
                     })}

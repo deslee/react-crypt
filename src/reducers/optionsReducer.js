@@ -11,7 +11,10 @@ export default function optionsReducer(state = initialState, action) {
         case UPDATE_OPTIONS:
             return {
                 ...state,
-                settings: action.payload
+                settings: {
+                    ...state.settings,
+                    ...action.payload
+                }
             }
         case REHYDRATE_STATE:
             return {

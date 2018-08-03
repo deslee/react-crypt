@@ -14,68 +14,97 @@ import MenuIcon from '@material-ui/icons/Menu';
 import List from '../List/List';
 import Item from '../Item/Item';
 import { getAllItems } from '../reducers/itemReducer';
+import { push } from 'connected-react-router';
+import AppMenu from './AppMenu';
 
 const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 const drawerWidth = 300;
 
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-    zIndex: 1,
-    overflow: 'hidden',
-    position: 'relative',
-    display: 'flex',
-    width: '100%',
-  },
-  appBar: {
-    position: 'absolute',
-    [theme.breakpoints.up('md')]: {
-      marginLeft: drawerWidth,
-      width: `calc(100% - ${drawerWidth}px)`,
-    },
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
-    [theme.breakpoints.up('md')]: {
-      display: 'none'
+class Start extends Component {
+  static style = theme => ({
+    root: {
+      textAlign: 'center',
+      height: '100%',
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center'
     }
-  },
-  toolbar: theme.mixins.toolbar,
-  drawerPaper: {
-    width: drawerWidth,
-    [theme.breakpoints.up('md')]: {
-      position: 'relative'
-    }
-  },
-  content: {
-    height: '100vh',
-    flexGrow: 1,
-    overflowY: 'auto',
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3,
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  flex: {
-    flexGrow: 1
-  },
-  searchField: {
-    paddingLeft: theme.spacing.unit * 2,
-    paddingRight: theme.spacing.unit * 2
-  },
-  drawer: {
-    display: 'flex',
-    height: '100%',
-    flexDirection: 'column'
-  },
-  innerContent: {
-    flex: 1
+  })
+
+  render() {
+    const {
+      classes
+    } = this.props;
+
+    return (
+      <div className={classes.root}>
+        <Typography variant="display2" gutterBottom>No Item Selected</Typography>
+        <Typography>Select an item from the menu or create a new item.</Typography>
+      </div>
+    )
   }
-})
+}
+
+Start = withStyles(Start.style)(Start);
 
 class Layout extends Component {
+  static styles = theme => ({
+    root: {
+      flexGrow: 1,
+      zIndex: 1,
+      overflow: 'hidden',
+      position: 'relative',
+      display: 'flex',
+      width: '100%',
+    },
+    appBar: {
+      position: 'absolute',
+      [theme.breakpoints.up('md')]: {
+        marginLeft: drawerWidth,
+        width: `calc(100% - ${drawerWidth}px)`,
+      },
+    },
+    menuButton: {
+      marginLeft: -12,
+      marginRight: 20,
+      [theme.breakpoints.up('md')]: {
+        display: 'none'
+      }
+    },
+    toolbar: theme.mixins.toolbar,
+    drawerPaper: {
+      width: drawerWidth,
+      [theme.breakpoints.up('md')]: {
+        position: 'relative'
+      }
+    },
+    content: {
+      height: '100vh',
+      flexGrow: 1,
+      overflowY: 'auto',
+      backgroundColor: theme.palette.background.default,
+      padding: theme.spacing.unit * 3,
+      display: 'flex',
+      flexDirection: 'column'
+    },
+    flex: {
+      flexGrow: 1
+    },
+    searchField: {
+      paddingLeft: theme.spacing.unit * 2,
+      paddingRight: theme.spacing.unit * 2
+    },
+    drawer: {
+      display: 'flex',
+      height: '100%',
+      flexDirection: 'column'
+    },
+    innerContent: {
+      flex: 1
+    }
+  })
   state = {
     mobileOpen: false,
     searchField: ''
@@ -89,6 +118,7 @@ class Layout extends Component {
 
   static mapDispatchToProps(dispatch) {
     return {
+      dispatch: dispatch
     }
   }
 
@@ -98,6 +128,15 @@ class Layout extends Component {
 
   searchChanged = (searchText) => {
     this.setState({searchField: searchText})
+  }
+
+  onItemAdded = (id) => {
+    const {
+      dispatch
+    } = this.props;
+
+    this.handleDrawerToggle();
+    dispatch(push(`/items/${id}`));
   }
 
   getFilteredItems = () => {
@@ -135,7 +174,7 @@ class Layout extends Component {
         </div>
         <List
           style={{flexGrow: 1}}
-          onItemAdded={() => this.handleDrawerToggle()}
+          onItemAdded={this.onItemAdded}
           onItemSelected={() => this.handleDrawerToggle()}
           items={this.getFilteredItems()}
           selectedItemId={itemId}
@@ -152,7 +191,8 @@ class Layout extends Component {
             </IconButton>
             <Typography variant="title" color="inherit" className={classes.flex}>
               My App
-              </Typography>
+            </Typography>
+            <AppMenu />
           </Toolbar>
         </AppBar>
         <Hidden mdUp>
@@ -185,7 +225,7 @@ class Layout extends Component {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <div className={classes.innerContent} >
-            { itemId && <Item itemId={itemId} />}
+            { itemId ? <Item itemId={itemId} /> : <Start /> }
           </div>
         </main>
       </div>
@@ -196,4 +236,4 @@ class Layout extends Component {
 export default withRouter(connect(
   Layout.mapStateToProps,
   Layout.mapDispatchToProps
-)(withStyles(styles)(Layout)));
+)(withStyles(Layout.styles)(Layout)));
